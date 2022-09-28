@@ -165,30 +165,14 @@ fun Completable.whileStarted(
     onComplete: Action? = null,
     onError: Consumer<in Throwable>?,
     onStart: Consumer<Disposable>? = null
-) {
-    val observer = object : DefaultLifecycleObserver {
-        var disposable: Disposable? = null
-
-        @SuppressLint("RxSubscribeOnError")
-        override fun onStart(owner: LifecycleOwner) {
-            super.onStart(owner)
-            disposable = subscribeWith(
-                completableObserver(
-                    onStart = onStart,
-                    onComplete = onComplete,
-                    onError = onError
-                )
-            )
-        }
-
-        override fun onStop(owner: LifecycleOwner) {
-            disposable?.dispose()
-            owner.lifecycle.removeObserver(this)
-            super.onStop(owner)
-        }
-    }
-
-    owner.lifecycle.addObserver(observer)
+) = whileStarted(owner) {
+    subscribeWith(
+        completableObserver(
+            onStart = onStart,
+            onComplete = onComplete,
+            onError = onError
+        )
+    )
 }
 
 private fun whileCreated(
