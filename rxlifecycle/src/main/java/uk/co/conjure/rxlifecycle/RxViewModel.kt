@@ -6,6 +6,10 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.flowables.ConnectableFlowable
 import io.reactivex.rxjava3.observables.ConnectableObservable
 
+/**
+ * Base class for a view model that stores a [CompositeDisposable] of all active subscriptions
+ * and destroys them on [AndroidViewModel.onCleared]
+ */
 abstract class RxViewModel : AndroidViewModel() {
 
     /**

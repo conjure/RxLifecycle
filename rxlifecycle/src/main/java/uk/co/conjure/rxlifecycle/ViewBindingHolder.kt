@@ -8,6 +8,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 
+/**
+ * Abstract base class for anything that holds reference to a [ViewBinding]. The binding instance
+ * should be released once it is no longer needed after the view is destroyed.
+ */
 abstract class ViewBindingHolder<B : ViewBinding> {
 
     private var _binding: B? = null
