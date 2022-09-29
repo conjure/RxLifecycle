@@ -228,6 +228,7 @@ private fun <T : Any> observer(
     onComplete: Action? = null,
 ) = object : DisposableObserver<T>() {
     override fun onStart() {
+        super.onStart()
         onStart?.accept(this)
     }
 
@@ -251,6 +252,7 @@ private fun <T : Any> subscriber(
     onComplete: Action? = null
 ) = object : DisposableSubscriber<T>() {
     override fun onStart() {
+        super.onStart()
         onStart?.accept(this)
     }
 
@@ -275,6 +277,7 @@ private fun <T : Any> maybeObserver(
 ) = object : DisposableMaybeObserver<T>() {
 
     override fun onStart() {
+        super.onStart()
         onStart?.accept(this)
     }
 
@@ -298,6 +301,7 @@ private fun completableObserver(
 ) = object : DisposableCompletableObserver() {
 
     override fun onStart() {
+        super.onStart()
         onStart?.accept(this)
     }
 
