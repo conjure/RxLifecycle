@@ -12,6 +12,11 @@ import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 
+/**
+ * Base class for the view component on an MVVM architecture app. Stores a [CompositeDisposable]
+ * of all subscriptions that the view observes and disposes of them when its lifecycle owner
+ * is stopped or destroyed.
+ */
 open class RxView<B : ViewBinding> : LifecycleView<B>() {
 
     protected val subscriptions = CompositeDisposable()
