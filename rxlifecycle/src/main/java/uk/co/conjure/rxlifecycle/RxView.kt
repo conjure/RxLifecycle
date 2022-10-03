@@ -10,12 +10,10 @@ import androidx.viewbinding.ViewBinding
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Observer
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 /**
- * Base class for the view component on an MVVM architecture app. Stores a [CompositeDisposable]
- * of all subscriptions that the view observes and disposes of them when its lifecycle owner
- * is stopped or destroyed.
+ * Base class for the view component on an MVVM architecture app. Provides convenience functions
+ * for observing sources during the [Lifecycle.State.STARTED] state of a views lifecycle.
  */
 open class RxView<B : ViewBinding> : LifecycleView<B>() {
 
