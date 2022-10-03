@@ -29,7 +29,7 @@ open class RxView<B : ViewBinding> : LifecycleView<B>() {
     @SuppressLint("RxSubscribeOnError")
     protected fun EditText.bind(
         observer: Observer<String>,
-        observable: Observable<String>
+        observable: Observable<String>? = null
     ) {
         this.changes().whileStarted(this@RxView,
             onNext = { observer.onNext(it) },
@@ -37,11 +37,10 @@ open class RxView<B : ViewBinding> : LifecycleView<B>() {
             onStart = { observer.onSubscribe(it) },
             onComplete = { observer.onComplete() }
         )
-        observable.whileStarted(this@RxView,
+        observable?.whileStarted(this@RxView,
             onNext = { text ->
                 if (text != this.text.toString()) {
                     this.setText(text)
-                    this.setSelection(text.length)
                 }
             }
         )
@@ -69,7 +68,7 @@ open class RxView<B : ViewBinding> : LifecycleView<B>() {
      */
     protected fun Button.bind(
         observer: Observer<Unit>,
-        observable: Observable<Boolean> = Observable.just(true)
+        observable: Observable<Boolean>? = null
     ) {
         this.clicks().whileStarted(this@RxView,
             onNext = { observer.onNext(it) },
@@ -77,7 +76,7 @@ open class RxView<B : ViewBinding> : LifecycleView<B>() {
             onStart = { observer.onSubscribe(it) },
             onComplete = { observer.onComplete() }
         )
-        observable.whileStarted(this@RxView,
+        observable?.whileStarted(this@RxView,
             onNext = { isEnabled -> this.isEnabled = isEnabled }
         )
     }
@@ -92,7 +91,7 @@ open class RxView<B : ViewBinding> : LifecycleView<B>() {
      */
     protected fun View.bindClicks(
         observer: Observer<Unit>,
-        observable: Observable<Boolean> = Observable.just(true)
+        observable: Observable<Boolean>? = null
     ) {
         this.clicks().whileStarted(this@RxView,
             onNext = { observer.onNext(it) },
@@ -100,7 +99,7 @@ open class RxView<B : ViewBinding> : LifecycleView<B>() {
             onStart = { observer.onSubscribe(it) },
             onComplete = { observer.onComplete() }
         )
-        observable.whileStarted(this@RxView,
+        observable?.whileStarted(this@RxView,
             onNext = { isEnabled -> this.isEnabled = isEnabled }
         )
     }
