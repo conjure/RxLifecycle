@@ -5,6 +5,10 @@ import co.uk.conjure.rxlifecycle.exampleapp.databinding.FragmentLoginBinding
 import uk.co.conjure.rxlifecycle.RxView
 import uk.co.conjure.rxlifecycle.whileStarted
 
+/**
+ * The LoginView is responsible to bind the layout to the ViewModel.
+ *
+ */
 class LoginView : RxView<FragmentLoginBinding>() {
 
     lateinit var viewModel: LoginViewModel

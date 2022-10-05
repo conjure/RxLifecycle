@@ -12,7 +12,9 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 import uk.co.conjure.rxlifecycle.RxViewModel
 
 /**
- * The ViewModel interface
+ * The ViewModel interface for the Login.
+ * It only offers Observables and Observers for the UI.
+ *
  */
 interface LoginViewModel {
     // input
@@ -23,8 +25,15 @@ interface LoginViewModel {
     // output
     val isLoginButtonEnabled: Observable<Boolean>
     val isLoading: Observable<Boolean>
-    val onLoginComplete: Observable<Unit>
     val error: Observable<LoginError>
+}
+
+/**
+ * Navigation event when the Login completes.
+ * It is separate from the [LoginViewModel] because it's not the Views job to perform the navigation.
+ */
+interface LoginNavigationModel {
+    val onLoginComplete: Observable<Unit>
 }
 
 enum class LoginError {
@@ -33,8 +42,13 @@ enum class LoginError {
     GENERIC_ERROR
 }
 
-
-class LoginViewModelImpl(private val api: LoginApi) : RxViewModel(), LoginViewModel {
+/**
+ * Actual implementation of the [LoginViewModel].
+ * It also implements [LoginNavigationModel] which will be observed by the Activity to navigate to
+ * the next screen.
+ */
+class LoginViewModelImpl(private val api: LoginApi) : RxViewModel(), LoginViewModel,
+    LoginNavigationModel {
 
     override val email: PublishSubject<String> = PublishSubject.create()
     override val password: PublishSubject<String> = PublishSubject.create()

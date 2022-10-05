@@ -7,6 +7,10 @@ import androidx.activity.viewModels
 import co.uk.conjure.rxlifecycle.exampleapp.databinding.ActivityLoginBinding
 import uk.co.conjure.rxlifecycle.whileStarted
 
+/**
+ * The LoginActivity creates the ViewModel and is hosting the [LoginFragment].
+ * It's only other responsibility is to navigate to the Dashboard when the login succeeds.
+ */
 class LoginActivity : AppCompatActivity() {
 
     private val viewModel: LoginViewModelImpl by viewModels { LoginViewModelImpl.Factory }
@@ -22,6 +26,10 @@ class LoginActivity : AppCompatActivity() {
         viewModel.onLoginComplete.whileStarted(this, { onLoginComplete() })
     }
 
+    /**
+     * Here you would usually launch a DashboardActivity and finish this Activity.
+     * We just show a text "LOGIN COMPLETE".
+     */
     private fun onLoginComplete() {
         setContentView(TextView(this).apply { text = "LOGIN COMPLETE" })
     }
