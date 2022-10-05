@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.lifecycle.*
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.exceptions.OnErrorNotImplementedException
 import io.reactivex.rxjava3.functions.Action
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.observers.DisposableCompletableObserver
@@ -237,7 +238,11 @@ private fun <T : Any> observer(
     }
 
     override fun onError(e: Throwable) {
-        onError?.accept(e)
+        if (onError != null) {
+            onError.accept(e)
+        } else {
+            throw OnErrorNotImplementedException(e)
+        }
     }
 
     override fun onComplete() {
@@ -260,8 +265,12 @@ private fun <T : Any> subscriber(
         onNext.accept(t)
     }
 
-    override fun onError(t: Throwable) {
-        onError?.accept(t)
+    override fun onError(e: Throwable) {
+        if (onError != null) {
+            onError.accept(e)
+        } else {
+            throw OnErrorNotImplementedException(e)
+        }
     }
 
     override fun onComplete() {
@@ -286,7 +295,11 @@ private fun <T : Any> maybeObserver(
     }
 
     override fun onError(e: Throwable) {
-        onError?.accept(e)
+        if (onError != null) {
+            onError.accept(e)
+        } else {
+            throw OnErrorNotImplementedException(e)
+        }
     }
 
     override fun onComplete() {
@@ -306,7 +319,11 @@ private fun completableObserver(
     }
 
     override fun onError(e: Throwable) {
-        onError?.accept(e)
+        if (onError != null) {
+            onError.accept(e)
+        } else {
+            throw OnErrorNotImplementedException(e)
+        }
     }
 
     override fun onComplete() {
