@@ -16,11 +16,19 @@ abstract class LifecycleView<B : ViewBinding> : ViewBindingHolder<B>() {
 
     final override fun onBindingRegistered(binding: B, owner: LifecycleOwner) {
         owner.lifecycle.addObserver(object : DefaultLifecycleObserver {
+            override fun onCreate(owner: LifecycleOwner) {
+                called = false
+                onCreate()
+                if (!called) {
+                    throw IllegalStateException("View $this did not call through to super.onCreate()")
+                }
+            }
+
             override fun onStart(owner: LifecycleOwner) {
                 called = false
                 onStart()
                 if (!called) {
-                    throw IllegalStateException("View $this did not call through to super.onCreate()")
+                    throw IllegalStateException("View $this did not call through to super.onStart()")
                 }
             }
 
@@ -28,7 +36,7 @@ abstract class LifecycleView<B : ViewBinding> : ViewBindingHolder<B>() {
                 called = false
                 onStop()
                 if (!called) {
-                    throw IllegalStateException("View $this did not call through to super.onCreate()")
+                    throw IllegalStateException("View $this did not call through to super.onStop()")
                 }
             }
 
@@ -37,10 +45,15 @@ abstract class LifecycleView<B : ViewBinding> : ViewBindingHolder<B>() {
                 called = false
                 onDestroy()
                 if (!called) {
-                    throw IllegalStateException("View $this did not call through to super.onCreate()")
+                    throw IllegalStateException("View $this did not call through to super.onDestroy()")
                 }
             }
         })
+    }
+
+    @CallSuper
+    open fun onCreate() {
+        called = true
     }
 
     @CallSuper
