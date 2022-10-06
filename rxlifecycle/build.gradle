@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'maven-publish'
 }
 
 android {
@@ -31,6 +32,23 @@ android {
         viewBinding true
     }
     namespace 'uk.co.conjure.rxlifecycle'
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            // Creates a Maven publication called "release".
+            release(MavenPublication) {
+                // Applies the component for the release build variant.
+                from components.release
+
+                // You can then customize attributes of the publication as shown below.
+                groupId = 'uk.co.conjure'
+                artifactId = 'rxlifecycle'
+                version = '1.0.0-alpha01'
+            }
+        }
+    }
 }
 
 dependencies {
