@@ -1,5 +1,6 @@
 package uk.co.conjure.rxlifecycle
 
+import android.util.Log
 import androidx.lifecycle.ViewModel as AndroidViewModel
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -28,24 +29,53 @@ abstract class RxViewModel : AndroidViewModel() {
      * The Flowable will be alive as long as the ViewModel is alive (until the ViewModels
      * [onCleared] method is called).
      *
+     * @param cacheOnComplete If true will prevent the stream from completing. Late Observers will get the last emitted value.
      *  @see [Observable.replay], [ConnectableFlowable.refCount]
      */
-    protected fun <T : Any> Flowable<T>.hot(): Flowable<T> {
-        return this.replay(1).refCount().also {
-            keepAlive.add(it.subscribe({}, {}))
-        }
+    protected fun <T : Any> Flowable<T>.hot(cacheOnComplete: Boolean): Flowable<T> {
+        return this
+            .let { upstream ->
+                if (cacheOnComplete) {
+                    upstream.concatWith(Flowable.never())
+                } else {
+                    upstream.doOnComplete {
+                        Log.w(
+                            "RxViewModel",
+                            "WARNING: A .hot() Flowable completed. Late subscribers will NOT get the last item. You might want to use .hot(true)"
+                        )
+                    }
+                }
+            }
+            .replay(1).refCount().also {
+                keepAlive.add(it.subscribe({}, {}))
+            }
     }
 
     /**
      * Applies a replay(1).refCount() to the Observable and subscribes to it.
      * The Observable will be alive as long as the ViewModel is alive (until the ViewModels
      * [onCleared] method is called).
+     *
+     * @param cacheOnComplete If true will prevent the stream from completing. Late Observers will get the last emitted value.
      * @see [Observable.replay], [ConnectableObservable.refCount]
      */
-    protected fun <T : Any> Observable<T>.hot(): Observable<T> {
-        return this.replay(1).refCount().also {
-            keepAlive.add(it.subscribe({}, {}))
-        }
+    protected fun <T : Any> Observable<T>.hot(cacheOnComplete: Boolean = false): Observable<T> {
+        return this
+            .let { upstream ->
+                if (cacheOnComplete) {
+                    upstream.concatWith(Observable.never())
+                } else {
+                    upstream.doOnComplete {
+                        Log.w(
+                            "RxViewModel",
+                            "WARNING: A .hot() Observable completed. Late subscribers will NOT get the last item. You might want to use .hot(true)"
+                        )
+                    }
+                }
+            }
+            .replay(1).refCount().also {
+                keepAlive.add(it.subscribe({}, {}))
+            }
     }
 
     /**
