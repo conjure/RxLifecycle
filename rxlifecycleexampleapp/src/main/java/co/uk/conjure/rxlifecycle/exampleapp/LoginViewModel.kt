@@ -116,9 +116,21 @@ class LoginViewModelImpl(private val api: LoginApi) : RxViewModel(), LoginViewMo
         }
     }
 
+    /**
+     * Loads the terms and conditions from the API.
+     *
+     * Making an Observable .hot() will share a single subscription with all observers.
+     * It will also subscribe immediately to the upstream and keep the subscription alive for as long
+     * as the ViewModel is alive (onCleared() is called).
+     *
+     * In this example the takeUntil() will complete the upstream once the terms have been loaded.
+     * The cacheOnComplete = true option of .hot() will then prevent the Observable from completion
+     * and ensure late subscribers will get the last emitted item.
+     */
     private val terms: Observable<Terms> = showTermsClick.switchMap {
         loadTermsAndConditions()
-    }.takeUntil { it is Terms.TermsAndConditions }
+    }
+        .takeUntil { it is Terms.TermsAndConditions }
         .hot(cacheOnComplete = true)
 
     override val termsContent: Observable<String>
