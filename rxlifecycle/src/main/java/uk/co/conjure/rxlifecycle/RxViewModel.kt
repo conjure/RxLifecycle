@@ -29,6 +29,7 @@ abstract class RxViewModel : AndroidViewModel() {
      * The Flowable will be alive as long as the ViewModel is alive (until the ViewModels
      * [onCleared] method is called).
      *
+     * @param cacheOnComplete If true will prevent the stream from completing. Late Observers will get the last emitted value.
      *  @see [Observable.replay], [ConnectableFlowable.refCount]
      */
     protected fun <T : Any> Flowable<T>.hot(cacheOnComplete: Boolean): Flowable<T> {
@@ -46,14 +47,16 @@ abstract class RxViewModel : AndroidViewModel() {
                 }
             }
             .replay(1).refCount().also {
-            keepAlive.add(it.subscribe({}, {}))
-        }
+                keepAlive.add(it.subscribe({}, {}))
+            }
     }
 
     /**
      * Applies a replay(1).refCount() to the Observable and subscribes to it.
      * The Observable will be alive as long as the ViewModel is alive (until the ViewModels
      * [onCleared] method is called).
+     *
+     * @param cacheOnComplete If true will prevent the stream from completing. Late Observers will get the last emitted value.
      * @see [Observable.replay], [ConnectableObservable.refCount]
      */
     protected fun <T : Any> Observable<T>.hot(cacheOnComplete: Boolean = false): Observable<T> {
