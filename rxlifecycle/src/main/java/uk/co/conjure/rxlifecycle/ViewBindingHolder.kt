@@ -7,14 +7,26 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
+import java.lang.Exception
 
-abstract class ViewBindingHolder<B : ViewBinding> {
+/**
+ * Abstract base class for anything that holds reference to a [ViewBinding]. The binding instance
+ * should be released once it is no longer needed after the view is destroyed.
+ */
+abstract class ViewBindingHolder<B : ViewBinding> : LifecycleOwner {
 
     private var _binding: B? = null
 
     protected val binding: B get() = _binding!!
 
     protected val context: Context get() = _binding!!.root.context
+
+    private var lifecycle: Lifecycle? = null
+
+    override fun getLifecycle(): Lifecycle {
+        return lifecycle
+            ?: throw Exception("You must call registerBinding on this View before accessing its lifecycle")
+    }
 
     /**
      * Only valid for the lifecycle of the View
@@ -52,9 +64,10 @@ abstract class ViewBindingHolder<B : ViewBinding> {
     abstract fun onBindingRegistered(binding: B, owner: LifecycleOwner)
 
 
-    private fun registerBinding(binding: B, lifecycleOwner: Lifecycle) {
+    private fun registerBinding(binding: B, lifecycle: Lifecycle) {
         this._binding = binding
-        lifecycleOwner.addObserver(object : DefaultLifecycleObserver {
+        this.lifecycle = lifecycle
+        lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onDestroy(owner: LifecycleOwner) {
                 owner.lifecycle.removeObserver(this)
                 this@ViewBindingHolder._binding = null
