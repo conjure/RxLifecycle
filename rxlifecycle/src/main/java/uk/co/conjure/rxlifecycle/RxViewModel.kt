@@ -1,5 +1,6 @@
 package uk.co.conjure.rxlifecycle
 
+import android.util.Log
 import androidx.lifecycle.ViewModel as AndroidViewModel
 import io.reactivex.rxjava3.core.*
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -30,8 +31,21 @@ abstract class RxViewModel : AndroidViewModel() {
      *
      *  @see [Observable.replay], [ConnectableFlowable.refCount]
      */
-    protected fun <T : Any> Flowable<T>.hot(): Flowable<T> {
-        return this.replay(1).refCount().also {
+    protected fun <T : Any> Flowable<T>.hot(cacheOnComplete: Boolean): Flowable<T> {
+        return this
+            .let { upstream ->
+                if (cacheOnComplete) {
+                    upstream.concatWith(Flowable.never())
+                } else {
+                    upstream.doOnComplete {
+                        Log.w(
+                            "RxViewModel",
+                            "WARNING: A .hot() Flowable completed. Late subscribers will NOT get the last item. You might want to use .hot(true)"
+                        )
+                    }
+                }
+            }
+            .replay(1).refCount().also {
             keepAlive.add(it.subscribe({}, {}))
         }
     }
@@ -42,10 +56,23 @@ abstract class RxViewModel : AndroidViewModel() {
      * [onCleared] method is called).
      * @see [Observable.replay], [ConnectableObservable.refCount]
      */
-    protected fun <T : Any> Observable<T>.hot(): Observable<T> {
-        return this.replay(1).refCount().also {
-            keepAlive.add(it.subscribe({}, {}))
-        }
+    protected fun <T : Any> Observable<T>.hot(cacheOnComplete: Boolean = false): Observable<T> {
+        return this
+            .let { upstream ->
+                if (cacheOnComplete) {
+                    upstream.concatWith(Observable.never())
+                } else {
+                    upstream.doOnComplete {
+                        Log.w(
+                            "RxViewModel",
+                            "WARNING: A .hot() Observable completed. Late subscribers will NOT get the last item. You might want to use .hot(true)"
+                        )
+                    }
+                }
+            }
+            .replay(1).refCount().also {
+                keepAlive.add(it.subscribe({}, {}))
+            }
     }
 
     /**

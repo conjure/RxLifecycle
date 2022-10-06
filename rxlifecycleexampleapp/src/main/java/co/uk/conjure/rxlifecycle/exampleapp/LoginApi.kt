@@ -6,7 +6,11 @@ import java.util.concurrent.TimeUnit
 class LoginApi {
 
     fun login(email: String, password: String): Single<Result> {
-        return Single.just(Result.SUCCESS).delay(2,TimeUnit.SECONDS)
+        return Single.just(Result.SUCCESS).delay(2, TimeUnit.SECONDS)
+    }
+
+    fun getTermsAndConditions(): Single<String> {
+        return Single.just("Terms and condition content").delay(1, TimeUnit.SECONDS)
     }
 
     enum class Result {

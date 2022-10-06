@@ -21,6 +21,7 @@ interface LoginViewModel {
     val email: Observer<String>
     val password: Observer<String>
     val loginClick: Observer<Unit>
+    val showTermsClick: Observer<Unit>
 
     // output
     val isLoginButtonEnabled: Observable<Boolean>
@@ -33,7 +34,17 @@ interface LoginViewModel {
  * It is separate from the [LoginViewModel] because it's not the Views job to perform the navigation.
  */
 interface LoginNavigationModel {
+    val onShowTerms: Observable<Unit>
     val onLoginComplete: Observable<Unit>
+}
+
+/**
+ * Interface for the [TermsAndConditionsView]
+ */
+interface TermsAndConditionsViewModel {
+    val termsContent: Observable<String>
+    val isLoadingTerms: Observable<Boolean>
+    val loadingTermsFailed: Observable<Boolean>
 }
 
 enum class LoginError {
@@ -42,17 +53,24 @@ enum class LoginError {
     GENERIC_ERROR
 }
 
+sealed class Terms {
+    object Loading : Terms()
+    object LoadingFailed : Terms()
+    class TermsAndConditions(val text: String) : Terms()
+}
+
 /**
  * Actual implementation of the [LoginViewModel].
  * It also implements [LoginNavigationModel] which will be observed by the Activity to navigate to
  * the next screen.
  */
 class LoginViewModelImpl(private val api: LoginApi) : RxViewModel(), LoginViewModel,
-    LoginNavigationModel {
+    LoginNavigationModel, TermsAndConditionsViewModel {
 
     override val email: PublishSubject<String> = PublishSubject.create()
     override val password: PublishSubject<String> = PublishSubject.create()
     override val loginClick: PublishSubject<Unit> = PublishSubject.create()
+    override val showTermsClick: PublishSubject<Unit> = PublishSubject.create()
 
     private val state: BehaviorSubject<LoginState> =
         BehaviorSubject.createDefault(LoginState.Idle("", ""))
@@ -88,6 +106,7 @@ class LoginViewModelImpl(private val api: LoginApi) : RxViewModel(), LoginViewMo
     override val isLoading: Observable<Boolean> =
         state.map { it is LoginState.Loading || it is LoginState.Done }
 
+    override val onShowTerms: Observable<Unit> = showTermsClick
     override val onLoginComplete: Observable<Unit> = state.filter { it is LoginState.Done }.map { }
 
     override val error: Observable<LoginError> = state.map { state ->
@@ -96,6 +115,18 @@ class LoginViewModelImpl(private val api: LoginApi) : RxViewModel(), LoginViewMo
             else -> LoginError.NONE
         }
     }
+
+    private val terms: Observable<Terms> = showTermsClick.switchMap {
+        loadTermsAndConditions()
+    }.takeUntil { it is Terms.TermsAndConditions }
+        .hot(cacheOnComplete = true)
+
+    override val termsContent: Observable<String>
+        get() = terms.ofType(Terms.TermsAndConditions::class.java).map { it.text }
+    override val isLoadingTerms: Observable<Boolean>
+        get() = terms.map { it is Terms.Loading }
+    override val loadingTermsFailed: Observable<Boolean>
+        get() = terms.map { it is Terms.LoadingFailed }
 
 
     private fun performLogin(stateStream: Observable<LoginState>) =
@@ -128,6 +159,14 @@ class LoginViewModelImpl(private val api: LoginApi) : RxViewModel(), LoginViewMo
         }
         is LoginState.Loading -> state
     }
+
+    private fun loadTermsAndConditions() = api.getTermsAndConditions()
+        .observeOn(AndroidSchedulers.mainThread())
+        .map<Terms> { Terms.TermsAndConditions(it) }
+        .toObservable()
+        .startWithItem(Terms.Loading)
+        .onErrorReturnItem(Terms.LoadingFailed)
+
 
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {

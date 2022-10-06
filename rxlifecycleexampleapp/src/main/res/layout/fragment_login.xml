@@ -20,8 +20,8 @@
                 android:id="@+id/et_email"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="textEmailAddress"
                 android:hint="Email"
+                android:inputType="textEmailAddress"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -36,8 +36,8 @@
                 android:id="@+id/et_password"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="textPassword"
                 android:hint="Password"
+                android:inputType="textPassword"
                 android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -49,6 +49,16 @@
             android:layout_marginTop="8dp"
             android:text="Login"
             android:textAllCaps="true" />
+
+        <TextView
+            android:id="@+id/tv_open_terms"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="16dp"
+            android:padding="8dp"
+            android:text="Terms and Conditions"
+            android:textColor="?attr/colorSecondary" />
     </LinearLayout>
 
     <ProgressBar

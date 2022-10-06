@@ -31,5 +31,9 @@ class LoginView : RxView<FragmentLoginBinding>() {
                 binding.pbLoading.visibility = View.GONE
             }
         })
+
+        binding.tvOpenTerms.setOnClickListener {
+            viewModel.showTermsClick.onNext(Unit)
+        }
     }
 }
