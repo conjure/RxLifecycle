@@ -4,7 +4,7 @@
 
 ```gradle
 dependencies {
-  implementation 'uk.co.conjure:ScopedViewModel:1.0.0-alpha01'
+	implementation 'uk.co.conjure:RxLifecycle:1.0.0-alpha01'
 }
 ```
 
