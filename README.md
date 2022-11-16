@@ -1,14 +1,28 @@
 # RxLifecycle
 [![](https://jitpack.io/v/uk.co.conjure/RxLifecycle.svg)](https://jitpack.io/#uk.co.conjure/RxLifecycle)
 
+A small library that allows smooth integration between the Android Fragment, Activity and ViewModel lifecycle and RxJava/RxKotlin.
+
+## Including the library
+
+First add the following to your project level gradle repositories:
+
+```gradle
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+
+Then add the RxLifecycle dependency in the module level build.gradle:
 
 ```gradle
 dependencies {
 	implementation 'uk.co.conjure:RxLifecycle:1.0.0-alpha01'
 }
 ```
-
-A small library that allows smooth integration between the Android Fragment, Activity and ViewModel lifecycle and RxJava/RxKotlin.
 
 ## Code Sample
 

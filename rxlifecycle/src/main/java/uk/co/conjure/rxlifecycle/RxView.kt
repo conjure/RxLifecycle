@@ -10,6 +10,7 @@ import androidx.viewbinding.ViewBinding
 import com.jakewharton.rxbinding4.view.clicks
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Observer
+import uk.co.conjure.view_lifecycle.LifecycleView
 
 /**
  * Base class for the view component on an MVVM architecture app. Provides convenience functions
