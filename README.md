@@ -20,7 +20,7 @@ Then add the RxLifecycle dependency in the module level build.gradle:
 
 ```gradle
 dependencies {
-	implementation 'uk.co.conjure:RxLifecycle:1.0.0-alpha01'
+	implementation 'uk.co.conjure:RxLifecycle:1.0.0-alpha02'
 }
 ```
 
