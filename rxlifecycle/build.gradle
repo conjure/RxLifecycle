@@ -45,20 +45,21 @@ afterEvaluate {
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'uk.co.conjure'
                 artifactId = 'rxlifecycle'
-                version = '1.0.0-alpha01'
+                version = '1.0.0-alpha02'
             }
         }
     }
 }
 
 dependencies {
-    api group: 'io.reactivex.rxjava3', name: 'rxkotlin', version: '3.0.0'
-    api group: 'io.reactivex.rxjava3', name: 'rxandroid', version: '3.0.0'
-    api group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.0.11'
-    api 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
-    api 'com.jakewharton.rxbinding4:rxbinding-material:4.0.0'
+    api 'com.github.conjure:view-lifecycle:1.0.0-alpha01'
 
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation group: 'io.reactivex.rxjava3', name: 'rxkotlin', version: '3.0.1'
+    implementation group: 'io.reactivex.rxjava3', name: 'rxandroid', version: '3.0.0'
+    implementation group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.0.11'
+    implementation 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
+    implementation 'com.jakewharton.rxbinding4:rxbinding-material:4.0.0'
+
     implementation 'androidx.appcompat:appcompat:1.5.1'
 
     testImplementation "junit:junit:4.13.2"
