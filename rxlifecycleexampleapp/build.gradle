@@ -41,6 +41,10 @@ dependencies {
     implementation project(path: ':rxlifecycle')
     implementation "androidx.fragment:fragment-ktx:1.5.3"
 
+    implementation group: 'io.reactivex.rxjava3', name: 'rxkotlin', version: '3.0.1'
+    implementation group: 'io.reactivex.rxjava3', name: 'rxandroid', version: '3.0.0'
+    implementation group: 'io.reactivex.rxjava3', name: 'rxjava', version: '3.0.11'
+
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
     implementation 'com.google.android.material:material:1.6.1'
