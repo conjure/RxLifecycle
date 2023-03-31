@@ -3,6 +3,8 @@
 
 A small library that allows smooth integration between the Android Fragment, Activity and ViewModel lifecycle and RxJava/RxKotlin.
 
+View the [API documentation](https://developer.conjure.co.uk/api/RxLifecylce/index.html).
+
 ## Including the library
 
 First add the following to your project level gradle repositories:
